@@ -60,10 +60,14 @@ fastify.delete('/api/todos/:id', async (request, reply) => {
 })
 
 // Start server
-fastify.listen({ port: 3001 }, (err) => {
-    if (err) {
-        fastify.log.error(err)
-        process.exit(1)
-    }
-    console.log('⚡ Todo API running on http://localhost:3001')
+const PORT = process.env.PORT || 10000
+fastify.listen({ 
+  port: PORT, 
+  host: '0.0.0.0' 
+}, (err) => {
+  if (err) {
+    fastify.log.error(err)
+    process.exit(1)
+  }
+  console.log(`🚀 Todo API running on port ${PORT}`)
 })
