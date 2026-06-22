@@ -1,73 +1,58 @@
 import Fastify from 'fastify'
-import mongoose from 'mongoose'
 import cors from '@fastify/cors'
+import mongoose from 'mongoose'
 
 const fastify = Fastify({ logger: true })
+
 await fastify.register(cors, {
-    origin: ['http://localhost:5173', 'http://localhost:3000']
+    origin: ['http://localhost:3000']
 })
 
-// MongoDB Connect
 mongoose.connect('mongodb://localhost:27017/todoDB')
-    .then(() => console.log('✅ MongoDB Connected'))
+    .then(() => console.log('✅ MongoDB Local Connected'))
     .catch(err => console.log('❌ Mongo Error:', err))
 
 const todoSchema = new mongoose.Schema({
-    task: { type: String, required: true },
-    completed: { type: Boolean, default: false },
-    createdAt: { type: Date, default: Date.now }
+    title: { type: String, required: true }, // ← task maatti title
+    completed: { type: Boolean, default: false }
 })
 
 const Todo = mongoose.model('Todo', todoSchema)
 
-
-fastify.get('/api/todos', async (request, reply) => {
+// GET all todos - direct array
+fastify.get('/api/todos', async () => {
     const todos = await Todo.find()
-    return { success: true, data: todos }
+    return todos
 })
 
-// POST new todo
-fastify.post('/api/todos', async (request, reply) => {
-    try {
-        const newTodo = new Todo(request.body)
-        await newTodo.save()
-        reply.code(201).send({ success: true, data: newTodo })
-    } catch (error) {
-        reply.code(400).send({ success: false, message: error.message })
-    }
+// POST new todo - direct object
+fastify.post('/api/todos', async (request) => {
+    const { title } = request.body
+    const newTodo = new Todo({ title }) // ← title thanne use cheyyu
+    await newTodo.save()
+    return newTodo
 })
 
-// PUT update todo
-fastify.put('/api/todos/:id', async (request, reply) => {
-    try {
-        const updatedTodo = await Todo.findByIdAndUpdate(request.params.id, request.body, { new: true })
-        if (!updatedTodo) return reply.code(404).send({ success: false, message: 'Todo not found' })
-        return { success: true, data: updatedTodo }
-    } catch (error) {
-        reply.code(400).send({ success: false, message: error.message })
-    }
+// PUT - Update todo
+fastify.put('/api/todos/:id', async (request) => {
+    const { id } = request.params
+    const { completed } = request.body
+    const updatedTodo = await Todo.findByIdAndUpdate(id, { completed }, { new: true })
+    return updatedTodo
 })
 
 // DELETE todo
-fastify.delete('/api/todos/:id', async (request, reply) => {
-    try {
-        const deletedTodo = await Todo.findByIdAndDelete(request.params.id)
-        if (!deletedTodo) return reply.code(404).send({ success: false, message: 'Todo not found' })
-        return { success: true, message: 'Todo deleted successfully' }
-    } catch (error) {
-        reply.code(400).send({ success: false, message: error.message })
-    }
+fastify.delete('/api/todos/:id', async (request) => {
+    await Todo.findByIdAndDelete(request.params.id)
+    return { message: 'Deleted' }
 })
 
-// Start server
-const PORT = process.env.PORT || 10000
-fastify.listen({ 
-  port: PORT, 
-  host: '0.0.0.0' 
-}, (err) => {
-  if (err) {
-    fastify.log.error(err)
-    process.exit(1)
-  }
-  console.log(`🚀 Todo API running on port ${PORT}`)
+const PORT = 3001
+
+fastify.listen({ port: PORT }, (err) => {
+    if (err) {
+        console.log(err)
+        process.exit(1)
+    }
+    console.log(`🚀 Todo API running on port ${PORT}`)
 })
