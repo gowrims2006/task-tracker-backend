@@ -4,31 +4,35 @@ import mongoose from 'mongoose'
 
 const fastify = Fastify({ logger: true })
 
+// CORS - Vercel link kittumbol ithu maattanam
 await fastify.register(cors, {
-    origin: ['http://localhost:3000']
+    origin: ['http://localhost:3000', 'https://your-vercel-app.vercel.app']
 })
 
-mongoose.connect('mongodb://localhost:27017/todoDB')
-    .then(() => console.log('✅ MongoDB Local Connected'))
+// ✅ FIX 1: MONGODB ATLAS USE CHEYYUKA
+const mongoUrl = process.env.MONGODB_URI || "mongodb://localhost:27017/todoDB"
+
+mongoose.connect(mongoUrl)
+    .then(() => console.log('✅ MongoDB Connected'))
     .catch(err => console.log('❌ Mongo Error:', err))
 
 const todoSchema = new mongoose.Schema({
-    title: { type: String, required: true }, // ← task maatti title
+    title: { type: String, required: true },
     completed: { type: Boolean, default: false }
 })
 
 const Todo = mongoose.model('Todo', todoSchema)
 
-// GET all todos - direct array
+// GET all todos
 fastify.get('/api/todos', async () => {
     const todos = await Todo.find()
     return todos
 })
 
-// POST new todo - direct object
+// POST new todo
 fastify.post('/api/todos', async (request) => {
     const { title } = request.body
-    const newTodo = new Todo({ title }) // ← title thanne use cheyyu
+    const newTodo = new Todo({ title })
     await newTodo.save()
     return newTodo
 })
@@ -47,7 +51,25 @@ fastify.delete('/api/todos/:id', async (request) => {
     return { message: 'Deleted' }
 })
 
-const PORT = 3001
+// ✅ FIX 2: RENDER NTE PORT + HOST USE CHEYYUKA
+const PORT = process.env.PORT || 3001
+
+fastify.listen({
+    port: PORT,
+    host: '0.0.0.0'  // Ithillenkil Render timeout aavum
+}, (err) => {
+    if (err) {
+        fastify.log.error(err)
+        process.exit(1)
+    }
+    console.log(`🚀 Todo API running on port ${PORT}`)
+})
+// DELETE todo
+fastify.delete('/api/todos/:id', async (request) => {
+    await Todo.findByIdAndDelete(request.params.id)
+    return { message: 'Deleted' }
+})
+
 
 fastify.listen({ port: PORT }, (err) => {
     if (err) {
