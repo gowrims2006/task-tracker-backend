@@ -4,10 +4,12 @@ import mongoose from 'mongoose'
 
 const fastify = Fastify({ logger: true })
 
+// ✅ CORS - ellam allow cheyyum ippo. Pinne Vercel URL maathram aakkam
 await fastify.register(cors, {
     origin: true
 })
 
+// ✅ MONGODB ATLAS CONNECT
 const mongoUrl = process.env.MONGODB_URI || "mongodb://localhost:27017/todoDB"
 
 try {
@@ -18,7 +20,7 @@ try {
     process.exit(1)
 }
 
-// Schema
+// ✅ Schema + timestamps
 const todoSchema = new mongoose.Schema({
     title: { type: String, required: true },
     completed: { type: Boolean, default: false }
@@ -26,7 +28,7 @@ const todoSchema = new mongoose.Schema({
 
 const Todo = mongoose.model('Todo', todoSchema)
 
-// Health check route
+// ✅ Health check route
 fastify.get('/', async () => {
     return {
         message: 'Task Tracker API is Live 🚀',
@@ -35,7 +37,7 @@ fastify.get('/', async () => {
     }
 })
 
-// GET all todos
+// ✅ GET all todos
 fastify.get('/api/todos', async (request, reply) => {
     try {
         const todos = await Todo.find().sort({ createdAt: -1 })
@@ -45,7 +47,7 @@ fastify.get('/api/todos', async (request, reply) => {
     }
 })
 
-// POST new todo
+// ✅ POST new todo
 fastify.post('/api/todos', async (request, reply) => {
     try {
         const { title } = request.body
@@ -60,7 +62,7 @@ fastify.post('/api/todos', async (request, reply) => {
     }
 })
 
-// PUT - Update todo
+// ✅ PUT - Update todo
 fastify.put('/api/todos/:id', async (request, reply) => {
     try {
         const { id } = request.params
@@ -81,7 +83,7 @@ fastify.put('/api/todos/:id', async (request, reply) => {
     }
 })
 
-// DELETE todo
+// ✅ DELETE todo
 fastify.delete('/api/todos/:id', async (request, reply) => {
     try {
         const { id } = request.params
@@ -96,7 +98,7 @@ fastify.delete('/api/todos/:id', async (request, reply) => {
     }
 })
 
-// Render port + host
+// ✅ RENDER PORT + HOST
 const PORT = process.env.PORT || 3001
 const HOST = '0.0.0.0'
 
