@@ -5,8 +5,8 @@ import mongoose from 'mongoose'
 const fastify = Fastify({ logger: true })
 
 // CORS - Vercel link kittumbol ithu maattanam
-await fastify.register(cors, {
-    origin: ['http://localhost:3000', 'https://your-vercel-app.vercel.app']
+await fastify.register(cors, {    
+    origin: ['http://localhost:3000', 'https://react-task-tracker-pro.vercel.app'] // ← ninte real URL idu
 })
 
 // ✅ MONGODB ATLAS USE CHEYYUKA
