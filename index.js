@@ -2,7 +2,7 @@ import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import mongoose from 'mongoose'
 
-const fastify = Fastify({ logger: true })
+const fastify = Fastify()
 
 // CORS - Vercel link kittumbol ithu maattanam
 await fastify.register(cors, {    
