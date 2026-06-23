@@ -22,7 +22,10 @@ const todoSchema = new mongoose.Schema({
 })
 
 const Todo = mongoose.model('Todo', todoSchema)
-
+// GET all todos nte mukalil iduka
+fastify.get('/', async () => {
+    return { message: 'Task Tracker API is Live 🚀' }
+})
 // GET all todos
 fastify.get('/api/todos', async () => {
     const todos = await Todo.find()
