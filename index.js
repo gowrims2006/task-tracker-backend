@@ -5,13 +5,10 @@ import mongoose from 'mongoose'
 const fastify = Fastify({ logger: true })
 
 // CORS - Vercel link kittumbol ithu maattanam
+import cors from '@fastify/cors'
+
 await fastify.register(cors, {    
-    origin: [
-        'http://localhost:3000',
-        'https://react-task-tracker-pro.vercel.app',
-        'https://react-task-tracker-pro-git-main-gowri-project-s-projects.vercel.app',
-        'https://react-task-tracker-1ia9o985r-gowri-project-s-projects.vercel.app'
-    ]
+    origin: true  // ← ITHU MATHRAM. Ellam allow cheyyum
 })
 
 // ✅ MONGODB ATLAS USE CHEYYUKA
