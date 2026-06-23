@@ -6,7 +6,12 @@ const fastify = Fastify({ logger: true })
 
 // CORS - Vercel link kittumbol ithu maattanam
 await fastify.register(cors, {    
-    origin: true  // ← Development inu mathram. Production il risk aanu
+    origin: [
+        'http://localhost:3000',
+        'https://react-task-tracker-pro.vercel.app',
+        'https://react-task-tracker-pro-git-main-gowri-project-s-projects.vercel.app',
+        'https://react-task-tracker-1ia9o985r-gowri-project-s-projects.vercel.app'
+    ]
 })
 
 // ✅ MONGODB ATLAS USE CHEYYUKA
