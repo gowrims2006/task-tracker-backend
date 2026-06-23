@@ -9,7 +9,7 @@ await fastify.register(cors, {
     origin: ['http://localhost:3000', 'https://your-vercel-app.vercel.app']
 })
 
-// ✅ FIX 1: MONGODB ATLAS USE CHEYYUKA
+// ✅ MONGODB ATLAS USE CHEYYUKA
 const mongoUrl = process.env.MONGODB_URI || "mongodb://localhost:27017/todoDB"
 
 mongoose.connect(mongoUrl)
@@ -45,35 +45,21 @@ fastify.put('/api/todos/:id', async (request) => {
     return updatedTodo
 })
 
-// DELETE todo
+// DELETE todo - ORU THAVANA MATHRAM
 fastify.delete('/api/todos/:id', async (request) => {
     await Todo.findByIdAndDelete(request.params.id)
     return { message: 'Deleted' }
 })
 
-// ✅ FIX 2: RENDER NTE PORT + HOST USE CHEYYUKA
+// ✅ RENDER NTE PORT + HOST USE CHEYYUKA - ORU THAVANA MATHRAM
 const PORT = process.env.PORT || 3001
 
-fastify.listen({
-    port: PORT,
-    host: '0.0.0.0'  // Ithillenkil Render timeout aavum
+fastify.listen({ 
+  port: PORT, 
+  host: '0.0.0.0'
 }, (err) => {
     if (err) {
         fastify.log.error(err)
-        process.exit(1)
-    }
-    console.log(`🚀 Todo API running on port ${PORT}`)
-})
-// DELETE todo
-fastify.delete('/api/todos/:id', async (request) => {
-    await Todo.findByIdAndDelete(request.params.id)
-    return { message: 'Deleted' }
-})
-
-
-fastify.listen({ port: PORT }, (err) => {
-    if (err) {
-        console.log(err)
         process.exit(1)
     }
     console.log(`🚀 Todo API running on port ${PORT}`)
