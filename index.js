@@ -5,8 +5,6 @@ import mongoose from 'mongoose'
 const fastify = Fastify({ logger: true })
 
 // CORS - Vercel link kittumbol ithu maattanam
-import cors from '@fastify/cors'
-
 await fastify.register(cors, {    
     origin: true  // ← ITHU MATHRAM. Ellam allow cheyyum
 })
